@@ -1,0 +1,25 @@
+Landing Screen
+    Instructions
+    Player Name Input
+    Play Game Pressable
+Game Screen
+    Info View
+        Success/Failure
+        Current Streak
+    Top Row View
+        Red Pressable
+        Yellow Pressable
+    Bottom Row View
+        Blue Pressable
+        Green Pressable
+    Start Game Pressable
+Game Over Screen
+    LOSS
+    Current Streak
+    Correct Sequence
+    Restart Pressable
+Victory Screen
+    WIN
+    Current Streak
+    :tada: Emoji
+    Restart Pressable
