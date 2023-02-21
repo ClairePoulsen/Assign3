@@ -21,7 +21,6 @@ initArray = () => {
     for (var i = 0; i < 10; i++) {
         //Create a random number between 0-3
         let number = (Math.floor(Math.random() * 100) + 1) % 4;
-        // console.log(number);
         // Put the random number in to the array
         newOrder = [...newOrder, number];
         console.log(newOrder);
