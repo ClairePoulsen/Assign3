@@ -104,7 +104,7 @@ export default class Game extends Component {
                 playerOrder: [...this.state.playerOrder, number],
             });
         }
-        this.checkOrder();
+        this.checkOrder()
     }
 
     // Check player order against correct order
@@ -121,7 +121,7 @@ export default class Game extends Component {
         if (match) {
             this.setState ({ success: 'Success!', });
         } else {
-            this.setState ({ success: 'You fucked up', });
+            this.setState ({ success: 'You messed up', });
         }
         console.log(match);
     }
