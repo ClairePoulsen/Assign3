@@ -8,7 +8,7 @@ export default class Game extends Component {
         super(props);
         this.state = {
             success: '',
-            streak: 5,
+            streak: 0,
             order: [],
             btnText: "I'm Ready",
             btnColor: 'limegreen',
@@ -26,6 +26,10 @@ export default class Game extends Component {
 
     // Create the array of random numbers
     componentDidMount() {
+        this.fillArray();
+    }
+
+    fillArray = () => {
         let newOrder = [];
         for (let i = 0; i < 10; i++) {
             let randNumber = (Math.floor(Math.random() * 100) + 1) % 4;
@@ -37,18 +41,34 @@ export default class Game extends Component {
     }
 
     // Player starts the game
-    onGameStart = () => {
-        if (!this.state.running) {
+    mainButton = () => {
+        const {navigation} = this.props;
+        if (!this.state.running && !this.state.gameOver && (this.state.streak < 10)) {
+            // Player starts a new round
             this.timerID = setInterval(
                 () => this.tick(), 500
             );
-            this.setState({ btnText: 'Pay Attention', running: true });
+            this.setState({
+                btnText: 'Pay Attention',
+                success: '',
+            });
+        } else if (!this.state.running && this.state.gameOver) {
+            // Player has lost
+            {navigation.navigate('GameOver', {playerStreak: this.state.streak, correctOrder: this.state.order});};
+            this.setState({
+                streak: 0,
+                success: '',
+                playerOrder: [],
+            });
+            this.fillArray();
+        } else if (this.state.streak == 10) {
+            // Player has won
         }
     }
 
     // Flash the buttons in order
     tick() {
-        if (this.state.counter < this.state.streak) {
+        if (this.state.counter < this.state.streak + 1) {
             switch(this.state.order[this.state.counter]) {
 
                 case 0:
@@ -88,42 +108,65 @@ export default class Game extends Component {
                     break;
             }
             this.setState({ counter: this.state.counter + 1 });
-        } else if (this.state.counter == this.state.streak) {
+        } else if (this.state.counter > this.state.streak) {
             clearInterval(this.timerID);
             this.setState({
                 counter: 0,
                 btnText: "Your Turn",
+                btnColor: 'blue',
+                running: true,
             });
         }
     }
 
     // Player presses their buttons
     onButtonPress = (number) => {
-        if (this.state.playerOrder.length < this.state.order.length) {
-            this.setState({
-                playerOrder: [...this.state.playerOrder, number],
+        if (this.state.running) {
+            if (this.state.playerOrder.length < this.state.streak + 1) {
+                this.setState({
+                    playerOrder: [...this.state.playerOrder, number],
+                });
+            }
+            // I find it kind of ridiculous that there's a miniscule delay in
+            // setting state variables, but setting a Timeout fixes things
+            setTimeout(() => {
+                this.checkOrder();
             });
         }
-        this.checkOrder()
     }
 
     // Check player order against correct order
-    /*
-    * TODO:     -Figure out why it doesn't register false until the press after
-    *           the wrong one
-    *           -Add in the button change state and navi to Win or Game Over
-    */
     checkOrder = () => {
         let match = true;
         for (let i = 0; i < this.state.playerOrder.length; i++) {
             match = match && (this.state.playerOrder[i] == this.state.order[i]);
         }
-        if (match) {
-            this.setState ({ success: 'Success!', });
-        } else {
-            this.setState ({ success: 'You messed up', });
+        if (!match) {
+            this.setState ({
+                success: 'You messed up',
+                running: false,
+                btnText: 'Game Over',
+                btnColor: 'red',
+                gameOver: true,
+            });
         }
-        console.log(match);
+        if (match && (this.state.playerOrder.length == this.state.streak + 1)) {
+            this.setState({
+                success: 'Success',
+                streak: this.state.streak + 1,
+                playerOrder: [],
+                btnText: "I'm Ready",
+                btnColor: 'limegreen',
+                running: false,
+            });
+        }
+        if (match && (this.state.streak == 10)) {
+            this.setState({
+                btnText: 'See Stats',
+                success: 'You Won!!!',
+                running: false,
+            })
+        }
     }
 
     render() {
@@ -131,7 +174,6 @@ export default class Game extends Component {
             <View style={styles.container}>
                 <Text>Order: {this.state.order}</Text>
                 <Text>Player Order: {this.state.playerOrder}</Text>
-                <Text>Counter: {this.state.counter}</Text>
                 <View style={styles.info}>
                     <Text style={styles.instText}>{this.state.success}</Text>
                     <Text style={styles.instText}>Current Streak: {this.state.streak}</Text>
@@ -147,7 +189,7 @@ export default class Game extends Component {
                     <Simon color={this.state.simonColor3} number={3} callback={this.onButtonPress} />
                 </View>
         
-                <TouchableOpacity style={[styles.startGame, {backgroundColor: this.state.btnColor}]} onPress={this.onGameStart}>
+                <TouchableOpacity style={[styles.startGame, {backgroundColor: this.state.btnColor}]} onPress={this.mainButton}>
                     <Text style={styles.startText}>{this.state.btnText}</Text>
                 </TouchableOpacity>
         

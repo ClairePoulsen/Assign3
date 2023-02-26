@@ -37,8 +37,24 @@ export default function App() {
             })
           }
         />
-        <Stack.Screen name="Game Over" component={GameOver} />
-        <Stack.Screen name="Victory" component={Victory} />
+        <Stack.Screen name="GameOver"
+          component={GameOver}
+          options={
+            ({route}) => ({
+              title: 'Game Over',
+              headerTitleAlign: 'center',
+            })
+          }
+        />
+        <Stack.Screen name="Victory"
+          component={Victory}
+          options={
+            ({route}) => ({
+              title: 'Congratulations!',
+              headerTitleAlign: 'center',
+            })
+          }
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -94,12 +110,73 @@ const Landing = ({navigation}) => {
 // The Main Game Screen
 const GameScreen = ({navigation, route}) => {
   return (
-    <Game />
+    <Game navigation={navigation}/>
   )
 };
 
 // The Game Over Screen
-const GameOver = ({navigation, route}) => {};
+const GameOver = ({navigation, route}) => {
+  let streak = route.params.playerStreak;
+  let order = route.params.correctOrder;
+  let colorOrder = [];
+
+  // Convert the array to text
+  for (let i = 0; i < order.length; i++) {
+    switch (order[i]) {
+      case 0:
+        if (i < order.length - 1) {
+          colorOrder[i] = 'Blue, ';
+        } else {
+          colorOrder[i] = 'Blue';
+        }
+        break;
+      case 1:
+        if (i < order.length - 1) {
+          colorOrder[i] = 'Green, ';
+        } else {
+          colorOrder[i] = 'Green';
+        }
+        break;
+      case 2:
+        if (i < order.length - 1) {
+          colorOrder[i] = 'Red, ';
+        } else {
+          colorOrder[i] = 'Red';
+        }
+        break;
+      case 3:
+        if (i < order.length - 1) {
+          colorOrder[i] = 'Yellow, ';
+        } else {
+          colorOrder[i] = 'Yellow';
+        }
+        break;
+    }
+  }
+
+  return (
+    <View style={styles.container}>
+      {/* LOSS */}
+      <Text style={styles.stats}>You Lose</Text>
+      {/* CURRENT STREAK */}
+      <Text style={styles.stats}>Your Streak Was: {streak} Rounds</Text>
+      {/* CORRECT SEQUENCE */}
+      <Text style={styles.stats}>The Complete Correct Order Was:</Text>
+      <Text style={styles.stats}>{colorOrder}</Text>
+      {/* RESTART PRESSABLE */}
+    </View>
+  )
+};
 
 // The Victory Screen
-const Victory = ({navigation, route}) => {};
+const Victory = ({navigation, route}) => {
+  let streak = route.params.playerStreak;
+  return (
+    <View style={styles.conainer}>
+      {/* WIN */}
+      {/* CURRENT STREAK */}
+      {/* CELEBRATION EMOJI */}
+      {/* RESTART PRESSABLE */}
+    </View>
+  )
+};

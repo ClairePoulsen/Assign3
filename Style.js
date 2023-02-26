@@ -47,18 +47,6 @@ export default StyleSheet.create({
         marginBottom: 20,
         marginTop: 40,
     },
-    gameOver: {
-        backgroundColor: 'red',
-        width: '90%',
-        height: 70,
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderWidth: 2,
-        borderColor: 'black',
-        borderRadius: 30,
-        marginBottom: 20,
-        marginTop: 40,
-    },
     startText: {
         fontSize: 30,
         fontWeight: 'bold',
@@ -81,5 +69,9 @@ export default StyleSheet.create({
         margin: 10,
         borderColor: 'black',
         borderWidth: 4,
+    },
+    stats:{
+        fontSize: 20,
+        padding: 25,
     },
 });
