@@ -51,6 +51,7 @@ export default class Game extends Component {
                 () => this.tick(), 500
             );
             this.setState({
+                btnColor: 'orange',
                 btnText: 'Pay Attention',
                 success: '',
             });
