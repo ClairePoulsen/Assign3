@@ -11,10 +11,9 @@ export default StyleSheet.create({
         alignItems: 'center',
     },
     inst: {
-        height: 250,
+        height: 200,
         width: '90%',
         padding: 30,
-        marginBottom: 20,
         marginTop: 20,
     },
     instText: {
@@ -47,6 +46,16 @@ export default StyleSheet.create({
         marginBottom: 20,
         marginTop: 40,
     },
+    difficulty: {
+        alignItems: 'center',
+        backgroundColor: 'lightgrey',
+        justifyContent: 'center',
+        width: '25%',
+        height: 65,
+        borderRadius: 15,
+        margin: 5,
+        borderWidth: 2,
+    },
     startText: {
         fontSize: 30,
         fontWeight: 'bold',
@@ -70,8 +79,14 @@ export default StyleSheet.create({
         borderColor: 'black',
         borderWidth: 4,
     },
-    stats:{
+    stats: {
         fontSize: 20,
         padding: 25,
+    },
+    celebrate: {
+        aspectRatio: 1,
+        width: '80%',
+        height: undefined,
+        marginTop: 10,
     },
 });

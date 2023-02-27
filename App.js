@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Alert, Keyboard, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
+import { Alert, Image, Keyboard, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 import styles from './Style';
 import Game from './Game';
 
@@ -64,17 +64,23 @@ export default function App() {
 const Landing = ({navigation}) => {
 
   const [name, onChangeName] = React.useState('');
+  // Shamelessly stealing my own code from Assign2
+  const [diffMod, changeDiff] = React.useState(5);
+  const [color1, changeColor1] = React.useState('black');
+  const [color2, changeColor2] = React.useState('lightgrey');
+  const [color3, changeColor3] = React.useState('lightgrey');
 
-  let instructions = 'These will be the instructions';
+  let instructions = 'A simple game of Simon Says. Press the buttons in the order they flash to win the game!';
 
-  navi = (page, name) => {
+  navi = (page, name, diffMod) => {
     page = page;
     name = name;
+    diffMod = diffMod;
     // If the user hasn't set a name, send an Alert
     if(name == '') {
       Alert.alert("Who Are You?", "You can't stay Anonymous.");
     } else {
-      {navigation.navigate(page, {name: name});};
+      {navigation.navigate(page, {name: name, diffMod: diffMod,});};
     }
   };
 
@@ -97,8 +103,41 @@ const Landing = ({navigation}) => {
           />
         </View>
 
+        {/* Display the difficulty selectors */}
+        {/* Once again, shamelessly stealing code from Assign2 */}
+        <View style={styles.btnRow}>
+
+          <Pressable
+            style={[{borderColor: color1}, styles.difficulty]}
+            onPress={() => {changeDiff(5),
+            changeColor1('black'),
+            changeColor2('lightgrey'),
+            changeColor3('lightgrey')}}>
+            <Text>Easy</Text>
+          </Pressable>
+
+          <Pressable
+            style={[{borderColor: color2}, styles.difficulty]}
+            onPress={() => {changeDiff(10),
+            changeColor1('lightgrey'),
+            changeColor2('black'),
+            changeColor3('lightgrey')}}>
+            <Text>Hard</Text>
+          </Pressable>
+
+          <Pressable
+            style={[{borderColor: color3}, styles.difficulty]}
+            onPress={() => {changeDiff(100),
+            changeColor1('lightgrey'),
+            changeColor2('lightgrey'),
+            changeColor3('black')}}>
+            <Text>Extreme</Text>
+          </Pressable>
+
+        </View>
+
         {/* Display the pressable to navigate to the Game Screen */}
-        <Pressable style={styles.startGame} onPress={() => {navi('Game', name)}}>
+        <Pressable style={styles.startGame} onPress={() => {navi('Game', name, diffMod)}}>
           <Text style={styles.startText}>Start the Game</Text>
         </Pressable>
 
@@ -109,8 +148,11 @@ const Landing = ({navigation}) => {
 
 // The Main Game Screen
 const GameScreen = ({navigation, route}) => {
+
+  let name = route.params.name;
+  let diffMod = route.params.diffMod;
   return (
-    <Game navigation={navigation}/>
+    <Game navigation={navigation} name={name} diffMod={diffMod}/>
   )
 };
 
@@ -119,9 +161,20 @@ const GameOver = ({navigation, route}) => {
   let streak = route.params.playerStreak;
   let order = route.params.correctOrder;
   let colorOrder = [];
+  let name = route.params.name;
+  let diff = route.params.diff;
+  let mode = '';
+
+  if (diff == 5) {
+    mode = 'Easy';
+  } else if (diff == 10) {
+    mode = 'Hard';
+  } else if (diff == 100) {
+    mode = 'Extreme';
+  };
 
   // Convert the array to text
-  for (let i = 0; i < order.length; i++) {
+  for (let i = 0; i < streak + 1; i++) {
     switch (order[i]) {
       case 0:
         if (i < order.length - 1) {
@@ -158,12 +211,16 @@ const GameOver = ({navigation, route}) => {
     <View style={styles.container}>
       {/* LOSS */}
       <Text style={styles.stats}>You Lose</Text>
+      <Text style={styles.stats}>On {mode} Mode</Text>
       {/* CURRENT STREAK */}
       <Text style={styles.stats}>Your Streak Was: {streak} Rounds</Text>
       {/* CORRECT SEQUENCE */}
-      <Text style={styles.stats}>The Complete Correct Order Was:</Text>
+      <Text style={styles.stats}>The Correct Order Was:</Text>
       <Text style={styles.stats}>{colorOrder}</Text>
       {/* RESTART PRESSABLE */}
+      <Pressable style={styles.startGame} onPress={() => {navi('Landing', name)}}>
+        <Text style={styles.startText}>Try Again</Text>
+      </Pressable>
     </View>
   )
 };
@@ -171,12 +228,33 @@ const GameOver = ({navigation, route}) => {
 // The Victory Screen
 const Victory = ({navigation, route}) => {
   let streak = route.params.playerStreak;
+  let name = route.params.name;
+  let celebrate = {uri: 'https://cdn.shopify.com/s/files/1/1061/1924/products/4_1024x1024.png?v=1571606116'};
+  let diff = route.params.diff;
+  let mode = '';
+
+  if (diff == 5) {
+    mode = 'Easy';
+  } else if (diff == 10) {
+    mode = 'Hard';
+  } else if (diff == 100) {
+    mode = 'Extreme';
+  };
+
   return (
-    <View style={styles.conainer}>
+    <View style={styles.container}>
       {/* WIN */}
+      <Text style={styles.stats}>You Win!</Text>
+      
+      <Text style={styles.stats}>On {mode} Mode!</Text>
       {/* CURRENT STREAK */}
+      <Text style={styles.stats}>Your Streak Was: {streak} Rounds!</Text>
       {/* CELEBRATION EMOJI */}
+      <Image source={celebrate} style={styles.celebrate} />
       {/* RESTART PRESSABLE */}
+      <Pressable style={styles.startGame} onPress={() => {navi('Landing', name)}}>
+        <Text style={styles.startText}>Play Again</Text>
+      </Pressable>
     </View>
   )
 };

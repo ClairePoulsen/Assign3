@@ -21,6 +21,8 @@ export default class Game extends Component {
             simonColor3: 'yellow',
             durationMS: 250,
             counter: 0,
+            name: props.name,
+            difficulty: props.diffMod,
         };
     }
 
@@ -31,7 +33,7 @@ export default class Game extends Component {
 
     fillArray = () => {
         let newOrder = [];
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < this.state.difficulty; i++) {
             let randNumber = (Math.floor(Math.random() * 100) + 1) % 4;
             newOrder = [...newOrder, randNumber];
         }
@@ -43,7 +45,7 @@ export default class Game extends Component {
     // Player starts the game
     mainButton = () => {
         const {navigation} = this.props;
-        if (!this.state.running && !this.state.gameOver && (this.state.streak < 10)) {
+        if (!this.state.running && !this.state.gameOver && (this.state.streak < this.state.difficulty)) {
             // Player starts a new round
             this.timerID = setInterval(
                 () => this.tick(), 500
@@ -54,15 +56,22 @@ export default class Game extends Component {
             });
         } else if (!this.state.running && this.state.gameOver) {
             // Player has lost
-            {navigation.navigate('GameOver', {playerStreak: this.state.streak, correctOrder: this.state.order});};
+            {navigation.navigate('GameOver', {playerStreak: this.state.streak, correctOrder: this.state.order, name: this.state.name, diff: this.state.difficulty});};
             this.setState({
                 streak: 0,
                 success: '',
                 playerOrder: [],
             });
             this.fillArray();
-        } else if (this.state.streak == 10) {
+        } else if (this.state.streak == this.state.difficulty) {
             // Player has won
+            {navigation.navigate('Victory', {playerStreak: this.state.streak, name: this.state.name, diff: this.state.difficulty});};
+            this.setState({
+                streak: 0,
+                success: '',
+                playerOrder: [],
+            });
+            this.fillArray();
         }
     }
 
@@ -160,7 +169,7 @@ export default class Game extends Component {
                 running: false,
             });
         }
-        if (match && (this.state.streak == 10)) {
+        if (match && (this.state.streak == this.state.difficulty)) {
             this.setState({
                 btnText: 'See Stats',
                 success: 'You Won!!!',
