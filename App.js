@@ -210,8 +210,7 @@ const GameOver = ({navigation, route}) => {
   return (
     <View style={styles.container}>
       {/* LOSS */}
-      <Text style={styles.stats}>You Lose</Text>
-      <Text style={styles.stats}>On {mode} Mode</Text>
+      <Text style={styles.stats}>You Lost On {mode} Mode.</Text>
       {/* CURRENT STREAK */}
       <Text style={styles.stats}>Your Streak Was: {streak} Rounds</Text>
       {/* CORRECT SEQUENCE */}
@@ -244,9 +243,7 @@ const Victory = ({navigation, route}) => {
   return (
     <View style={styles.container}>
       {/* WIN */}
-      <Text style={styles.stats}>You Win!</Text>
-      
-      <Text style={styles.stats}>On {mode} Mode!</Text>
+      <Text style={styles.stats}>You Won On {mode} Mode!</Text>
       {/* CURRENT STREAK */}
       <Text style={styles.stats}>Your Streak Was: {streak} Rounds!</Text>
       {/* CELEBRATION EMOJI */}
