@@ -181,8 +181,6 @@ export default class Game extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <Text>Order: {this.state.order}</Text>
-                <Text>Player Order: {this.state.playerOrder}</Text>
                 <View style={styles.info}>
                     <Text style={styles.instText}>{this.state.success}</Text>
                     <Text style={styles.instText}>Current Streak: {this.state.streak}</Text>
